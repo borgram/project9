@@ -1,0 +1,134 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basma</title>
+<link rel="stylesheet" href="basma4.css">
+<style>
+body {
+justify-content: center;
+justify-items: center;
+text-align: center;
+font-family: Arial, sans-serif;
+background-color:#000000;
+}
+h1 {
+color:#091DFF;
+}
+.board {
+display: grid;
+grid-template-columns: repeat(3, 100px);
+grid-template-rows: repeat(3, 100px);
+gap: 5px;
+margin: 20px auto;
+width: 310px;
+}
+.cell {
+display: flex;
+align-items: center;
+justify-content: center;
+background:#356B6D;
+border: 2px solid #46F1F6;
+font-size: 2em;
+color:#5BB98D; 
+font-weight: bold;
+cursor: pointer;
+height: 100px;
+width: 100px;
+}
+.cell:hover {
+background:#9B4242F2;
+color: #FF04D7; 
+}
+
+#status {
+font-size: 1.2em;
+margin: 10px;
+color:#3963F3F2;
+}
+
+button {
+padding: 10px 20px;
+font-size: 1em;
+cursor: pointer;
+border: none;
+background:#8C3BFFF2;
+color:#6DECD1F2;
+border-radius: 5px;
+transition: 0.3s;
+}
+
+button:hover {
+background:#6DADECF2;
+}
+</style> 
+</head>
+<body>
+<h1> X  🩵  O</h1>
+<div class="board">
+<div class="cell" data-index="0"></div>
+<div class="cell" data-index="1"></div>
+<div class="cell" data-index="2"></div>
+<div class="cell" data-index="3"></div>
+<div class="cell" data-index="4"></div>
+<div class="cell" data-index="5"></div>
+<div class="cell" data-index="6"></div>
+<div class="cell" data-index="7"></div>
+<div class="cell" data-index="8"></div>
+</div>
+<p id="status">دور اللاعب: X</p>
+<button id="reset">إعادة اللعبة</button>
+<script>
+const cells = document.querySelectorAll(".cell");
+const statusText = document.getElementById("status");
+const resetButton = document.getElementById("reset");
+let currentPlayer = "X";
+let gameBoard = ["", "", "", "", "", "", "", "", ""];
+let gameActive = true;
+const winConditions = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // صفوف
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // أعمدة
+    [0, 4, 8], [2, 4, 6] // أقطار
+];
+
+cells.forEach(cell => {
+cell.addEventListener("click", handleCellClick);
+});
+
+resetButton.addEventListener("click", resetGame);
+
+function handleCellClick(event) {
+const index = event.target.getAttribute("data-index");
+if (gameBoard[index] === "" && gameActive) {
+gameBoard[index]=currentPlayer;
+event.target.textContent = currentPlayer;
+if (checkWin()) {
+statusText.textContent = `🎉 اللاعب ${currentPlayer} فاز! 🎉`;
+gameActive = false;
+return;
+}
+if (gameBoard.includes("")) {
+currentPlayer = currentPlayer === "X" ? "O" : "X";
+statusText.textContent = `دور اللاعب: ${currentPlayer}`;
+} else {
+statusText.textContent = "😲 تعادل!";
+gameActive = false;
+}
+}
+}
+function checkWin() {
+return winConditions.some(condition => {
+return condition.every(index => gameBoard[index] === currentPlayer);
+});
+}
+
+function resetGame() {
+gameBoard = ["", "", "", "", "", "", "", "", ""];
+gameActive = true;
+currentPlayer = "X";
+statusText.textContent = `دور اللاعب: X`;
+cells.forEach(cell => cell.textContent = "");
+}
+</script>
+</body>
+</html>
